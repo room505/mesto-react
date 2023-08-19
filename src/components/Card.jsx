@@ -1,47 +1,36 @@
-import React, { useContext, useEffect } from "react";
-
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import { useContext } from "react";
 
-export default function Card({
-  card,
-  onCardClick,
-  onCardLike,
-  onCardDeleteClick,
-}) {
+function Card({ card, onCardClick, onCardLike, onCardDelete }) {
   const currentUser = useContext(CurrentUserContext);
-
   const isOwn = card.owner._id === currentUser._id;
-
   const isLiked = card.likes.some((i) => i._id === currentUser._id);
+  const isLikedActive = `element__like ${isLiked && "element__like_active"}`;
 
-  const cardLikeButtonClassName = `element__like-btn ${
-    isLiked ? "element__like-btn_active" : ""
-  }`;
-
-  const handleClick = () => {
-    onCardClick(card);
-  };
-
-  const handleLikeClick = () => {
+  function handleClick() {
+    onCardClick(card.name, card.link);
+  }
+  function handleToggleLike() {
     onCardLike(card);
-  };
-
-  const handleDeleteClick = () => {
-    onCardDeleteClick(card._id);
-  };
+  }
+  function handleDeleteCard() {
+    onCardDelete(card._id);
+    console.log(isOwn);
+  }
 
   return (
-    <div className="element">
+    <article className="element">
       {isOwn && (
         <button
-          className="element__delete-button"
+          aria-label="Delete"
           type="button"
-          onClick={handleDeleteClick}
+          className="element__delete-button"
+          onClick={handleDeleteCard}
         />
       )}
       <img
-        src={card.link}
         alt={card.name}
+        src={card.link}
         className="element__photo"
         onClick={handleClick}
       />
@@ -50,12 +39,14 @@ export default function Card({
         <div className="element__like-container">
           <button
             type="button"
-            className={cardLikeButtonClassName}
-            onClick={handleLikeClick}
+            className={isLikedActive}
+            onClick={handleToggleLike}
           />
           <p className="element__like-count">{card.likes.length}</p>
         </div>
       </div>
-    </div>
+    </article>
   );
 }
+
+export default Card;

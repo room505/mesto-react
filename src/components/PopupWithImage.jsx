@@ -1,16 +1,24 @@
-function PopupWithImage({ card, onClose }) {
+function PopupWithImage({ imageData, onClose, isOpen }) {
   return (
     <div
-      className={`popup popup_full-screen ${card.link ? "popup_opened" : ""}`}
+      className={
+        isOpen
+          ? "popup popup_full-screen popup_open"
+          : "popup popup_full-screen"
+      }
+      onClick={onClose}
     >
-      <div className="popup__full-screen-card">
+      <div
+        className="popup__full-screen-card"
+        onClick={(e) => e.stopPropagation()}
+      >
         <button className="popup__close" type="button" onClick={onClose} />
         <img
-          src={card.link}
-          alt={card.name}
+          src={imageData?.link}
+          alt={imageData?.name}
           className="popup__full-screen-photo"
         />
-        <p className="popup__title-for-photo">{card.name}</p>
+        <p className="popup__title-for-photo">{imageData?.name}</p>
       </div>
     </div>
   );

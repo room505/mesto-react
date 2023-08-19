@@ -25,7 +25,7 @@ class Api {
       headers: this._headers,
       body: JSON.stringify({
         name: data.name,
-        about: data.editAboutTheAuthor,
+        about: data.about,
       }),
     }).then((res) => this._checkResponse(res));
   }
@@ -68,40 +68,42 @@ class Api {
 
   changeLike(cardId, isLiked) {
     return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
-      method: `${!isLiked ? "DELETE" : "PUT"}`,
+      method: `${isLiked ? "DELETE" : "PUT"}`,
       headers: this._headers,
     }).then((res) => this._checkResponse(res));
   }
 
-  setUserInfo(data) {
-    return fetch(`${this._baseUrl}/users/me`, {
-      method: "PATCH",
-      headers: this._headers,
-      body: JSON.stringify({
-        name: data.name,
-        about: data.about,
-      }),
-    }).then((res) => this._parseResponse(res));
+  catch(err) {
+    console.log(err);
   }
 
-  // Редактирование аватара пользователя через попап
-  setUserAvatar(data) {
-    return fetch(`${this._baseUrl}/users/me/avatar`, {
-      method: "PATCH",
-      headers: this._headers,
-      body: JSON.stringify({
-        avatar: data.avatar,
-      }),
-    }).then((res) => this._parseResponse(res));
-  }
+  // setUserInfo(data) {
+  //   return fetch(`${this._baseUrl}/users/me`, {
+  //     method: "PATCH",
+  //     headers: this._headers,
+  //     body: JSON.stringify({
+  //       name: data.name,
+  //       about: data.about,
+  //     }),
+  //   }).then((res) => this._checkResponse(res));
+  // }
+
+  // // Редактирование аватара пользователя через попап
+  // setUserAvatar(data) {
+  //   return fetch(`${this._baseUrl}/users/me/avatar`, {
+  //     method: "PATCH",
+  //     headers: this._headers,
+  //     body: JSON.stringify({
+  //       avatar: data.avatar,
+  //     }),
+  //   }).then((res) => this._checkResponse(res));
+  // }
 }
 
-const api = new Api({
+export const api = new Api({
   baseUrl: "https://nomoreparties.co/v1/cohort-71",
   headers: {
     "Content-Type": "application/json",
     authorization: "8c99eae8-3828-437f-8671-7867c2b90d9d",
   },
 });
-
-export default api;
