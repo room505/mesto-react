@@ -1,6 +1,6 @@
 # Проект Mesto: интерактивной страницей, куда можно добавлять фотографии, удалять их и ставить лайки.
 
-### **[_ССЫЛКА НА GitHub Pages_](https://room505.github.io/mesto/)**
+### **[_ССЫЛКА НА GitHub Pages_](https://room505.github.io/mesto-react/)**
 
 ---
 

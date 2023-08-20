@@ -76,28 +76,6 @@ class Api {
   catch(err) {
     console.log(err);
   }
-
-  // setUserInfo(data) {
-  //   return fetch(`${this._baseUrl}/users/me`, {
-  //     method: "PATCH",
-  //     headers: this._headers,
-  //     body: JSON.stringify({
-  //       name: data.name,
-  //       about: data.about,
-  //     }),
-  //   }).then((res) => this._checkResponse(res));
-  // }
-
-  // // Редактирование аватара пользователя через попап
-  // setUserAvatar(data) {
-  //   return fetch(`${this._baseUrl}/users/me/avatar`, {
-  //     method: "PATCH",
-  //     headers: this._headers,
-  //     body: JSON.stringify({
-  //       avatar: data.avatar,
-  //     }),
-  //   }).then((res) => this._checkResponse(res));
-  // }
 }
 
 export const api = new Api({
