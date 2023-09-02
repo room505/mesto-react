@@ -14,12 +14,9 @@ import { api } from "../utils/Api.js";
 
 export default function App() {
   //*Инфо
-  const [currentUser, setCurrentUser] = useState({
-    name: "",
-    about: "",
-    avatar: "",
-  });
+  const [currentUser, setCurrentUser] = useState(null);
   const [cards, setCards] = useState(null);
+
   useEffect(() => {
     api.getUserInfo().then(setCurrentUser).catch(api.catch);
     api.getInitialCards().then(setCards).catch(api.catch);
@@ -31,6 +28,7 @@ export default function App() {
     card: "Создать",
     confirmation: "Да",
   });
+
 
   function handleEditProfile(data) {
     setButtonText({ ...buttonText, user: "Сохранение..." });
@@ -115,19 +113,6 @@ export default function App() {
       image: false,
     });
   }
-  const isOpen =
-    popup.profile ||
-    popup.card ||
-    popup.avatar ||
-    popup.confirmation ||
-    popup.image;
-  useEffect(() => {
-    function escClose(e) {
-      e.key === "Escape" ? closePopup() : null;
-    }
-    isOpen ? document.addEventListener("keydown", escClose) : null;
-    return () => document.removeEventListener("keydown", escClose);
-  }, [isOpen]);
 
   function handleToggleCardLike(card) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);

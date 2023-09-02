@@ -23,19 +23,19 @@ export default function Main({
             onClick={onEditAvatar}
           >
             <img
-              src={currentUser.avatar}
+              src={currentUser?.avatar}
               alt="Аватарка"
               className="profile__avatar"
             />
           </button>
           <div className="profile__info">
-            <h1 className="profile__author">{currentUser.name}</h1>
+            <h1 className="profile__author">{currentUser?.name}</h1>
             <button
               className="profile__button-edit"
               type="button"
               onClick={onEditProfile}
             />
-            <p className="profile__about-the-author">{currentUser.about}</p>
+            <p className="profile__about-the-author">{currentUser?.about}</p>
           </div>
         </div>
         <button

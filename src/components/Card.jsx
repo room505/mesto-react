@@ -5,7 +5,6 @@ function Card({ card, onCardClick, onCardLike, onCardDelete }) {
   const currentUser = useContext(CurrentUserContext);
   const isOwn = card.owner._id === currentUser._id;
   const isLiked = card.likes.some((i) => i._id === currentUser._id);
-  const isLikedActive = `element__like ${isLiked && "element__like_active"}`;
 
   function handleClick() {
     onCardClick(card.name, card.link);
@@ -39,7 +38,7 @@ function Card({ card, onCardClick, onCardLike, onCardDelete }) {
         <div className="element__like-container">
           <button
             type="button"
-            className={isLikedActive}
+            className={`element__like ${isLiked && "element__like_active"}`}
             onClick={handleToggleLike}
           />
           <p className="element__like-count">{card.likes.length}</p>

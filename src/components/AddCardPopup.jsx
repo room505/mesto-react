@@ -1,54 +1,23 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import PopupWithForm from "./PopupWithForm";
+import { useForm } from "react-hook-form";
 
 function AddPlacePopup({ isOpen, onClose, onAddCard, buttonText }) {
-  //*Строки
-  const inputTitle = useRef();
-  const inputLink = useRef();
-  //*Ошибки формы и сброс формы
-  const [error, setError] = useState({ name: "", link: "" });
-  const [resetSubmitButton, setResetSubmitButton] = useState(false);
-  const errorClassName = `popup__text-input-error ${
-    resetSubmitButton && "popup__text-input-error_active"
-  }`;
-
-  //*Сабмит
-  function handleSubmit(e) {
-    e.preventDefault();
-    onAddCard({
-      name: inputTitle.current.value,
-      link: inputLink.current.value,
-    });
-    inputTitle.current.value = "";
-    inputLink.current.value = "";
-  }
-
-  //*Закрыть окно
-  function closePopup() {
-    onClose();
-    inputTitle.current.value = "";
-    inputLink.current.value = "";
-    setError({ name: "", link: "" });
-  }
-
-  //*Валидация формы
-  function getTitleError() {
-    setError({ ...error, name: inputTitle.current.validationMessage });
-    validation();
-  }
-  function getLinkError() {
-    setError({ ...error, link: inputLink.current.validationMessage });
-    validation();
-  }
-  function validation() {
-    inputTitle.current.checkValidity() && inputLink.current.checkValidity()
-      ? setResetSubmitButton(false)
-      : setResetSubmitButton(true);
-  }
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+    reset,
+  } = useForm({ mode: "onChange" });
 
   useEffect(() => {
-    isOpen ? validation() : setResetSubmitButton(false);
+    reset();
   }, [isOpen]);
+
+  //*Сабмит
+  function onSubmit(data) {
+    onAddCard({ name: data.name, link: data.link });
+  }
 
   return (
     <PopupWithForm
@@ -56,9 +25,9 @@ function AddPlacePopup({ isOpen, onClose, onAddCard, buttonText }) {
       title={"Новое место"}
       buttonText={buttonText}
       isOpen={isOpen}
-      onClose={closePopup}
-      onSubmit={handleSubmit}
-      isDisable={resetSubmitButton}
+      onClose={onClose}
+      onSubmit={handleSubmit(onSubmit)}
+      isValid={isValid}
     >
       <label className="popup__filed">
         <input
@@ -66,24 +35,32 @@ function AddPlacePopup({ isOpen, onClose, onAddCard, buttonText }) {
           className="popup__text-input"
           name="name"
           placeholder="Название"
-          minLength={2}
           maxLength={30}
-          required
-          onChange={getTitleError}
-          ref={inputTitle}
+          {...register("name", {
+            required: "Заполните это поле.",
+            minLength: {
+              value: 2,
+              message: "Текст должен быть не короче 2 симв.",
+            },
+          })}
         />
-        <span className={errorClassName}>{error.name}</span>
+        <span className="popup__text-input-error">{errors.name?.message}</span>
       </label>
       <label className="popup__filed">
         <input
           type="url"
           className="popup__text-input"
           placeholder="Ссылка на картинку"
-          required
-          onChange={getLinkError}
-          ref={inputLink}
+          {...register("link", {
+            required: "Заполните это поле.",
+            pattern: {
+              value:
+                /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/,
+              message: "Введите URL.",
+            },
+          })}
         />
-        <span className={errorClassName}>{error.link}</span>
+        <span className="popup__text-input-error">{errors.link?.message}</span>
       </label>
     </PopupWithForm>
   );

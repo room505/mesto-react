@@ -1,34 +1,25 @@
 import { useRef, useState, useEffect } from "react";
 import PopupWithForm from "./PopupWithForm";
+import { useForm } from "react-hook-form";
+import usePopupClose from "../hooks/usePopupClose";
 
 function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar, buttonText }) {
-  const input = useRef();
-  const [error, setError] = useState();
-  const [resetSubmitButton, setResetSubmitButton] = useState(false);
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    onUpdateAvatar({ avatar: input.current.value });
-    input.current.value = "";
-  }
-  function closePopup() {
-    onClose();
-    input.current.value = "";
-    setError("");
-  }
-  //валидация
-  function getLinkError() {
-    setError(input.current.validationMessage);
-    validation();
-  }
-  function validation() {
-    input.current.checkValidity()
-      ? setResetSubmitButton(false)
-      : setResetSubmitButton(true);
-  }
+  usePopupClose(isOpen, onClose);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+    reset,
+  } = useForm({ mode: "onChange" });
+
   useEffect(() => {
-    isOpen ? validation() : setResetSubmitButton(false);
+    reset();
   }, [isOpen]);
+
+  function onSubmit(data) {
+    onUpdateAvatar({ avatar: data.avatar });
+  }
 
   return (
     <PopupWithForm
@@ -36,25 +27,25 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar, buttonText }) {
       title={"Обновить аватар"}
       buttonText={buttonText}
       isOpen={isOpen}
-      onClose={closePopup}
-      onSubmit={handleSubmit}
-      isDisable={resetSubmitButton}
+      onClose={onClose}
+      onSubmit={handleSubmit(onSubmit)}
+      isValid={isValid}
     >
       <label className="popup__filed">
         <input
           placeholder="Ссылка на картинку"
-          type="url"
           className="popup__text-input"
-          required
-          onChange={getLinkError}
-          ref={input}
+          {...register("avatar", {
+            required: "Заполните это поле.",
+            pattern: {
+              value:
+                /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/,
+              message: "Введите URL.",
+            },
+          })}
         />
-        <span
-          className={`popup__text-input-error ${
-            resetSubmitButton && "popup__text-input-error_active"
-          }`}
-        >
-          {error}
+        <span className="popup__text-input-error">
+          {errors.avatar?.message}
         </span>
       </label>
     </PopupWithForm>

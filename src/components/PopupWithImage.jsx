@@ -1,4 +1,7 @@
+import usePopupClose from "../hooks/usePopupClose";
+
 function PopupWithImage({ imageData, onClose, isOpen }) {
+  usePopupClose(isOpen, onClose);
   return (
     <div
       className={

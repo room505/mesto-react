@@ -1,3 +1,5 @@
+import usePopupClose from "../hooks/usePopupClose";
+
 function PopupWithForm({
   title,
   name,
@@ -6,12 +8,13 @@ function PopupWithForm({
   isOpen,
   onClose,
   children,
-  isDisable,
+  isValid,
 }) {
   const popupClassName = `popup popup_type_${name} ${isOpen && "popup_open"}`;
   const submitButtonClassName = `popup__save-edit ${
-    isDisable && "popup__save-edit_inactive"
+    !isValid && "popup__save-edit_inactive"
   }`;
+  usePopupClose(isOpen, onClose);
 
   return (
     <div className={popupClassName} onClick={onClose}>
@@ -30,7 +33,7 @@ function PopupWithForm({
           <button
             className={submitButtonClassName}
             type="submit"
-            disabled={isDisable}
+            disabled={!isValid}
           >
             {buttonText}
           </button>
